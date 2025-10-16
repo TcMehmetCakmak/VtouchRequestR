@@ -2,9 +2,9 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: vmerge-services-postgres-5
+    container_name: vtouch-services-postgres
     environment:
-      POSTGRES_DB: vmerge_services_db
+      POSTGRES_DB: vtouch_services_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:

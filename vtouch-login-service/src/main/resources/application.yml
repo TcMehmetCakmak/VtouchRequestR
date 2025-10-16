@@ -21,7 +21,7 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
   
   datasource:
-    url: jdbc:postgresql://localhost:5432/vmerge_services_db
+    url: jdbc:postgresql://localhost:5432/vtouch_services_db
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:password}
