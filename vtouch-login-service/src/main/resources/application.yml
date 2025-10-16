@@ -1,0 +1,83 @@
+spring:
+  application:
+    name: vmerge-services
+  security:
+    enabled: true
+    header-validation:
+      enabled: true
+    public-endpoints:
+      - /auth/**
+      - /actuator/**
+      - /v3/api-docs
+      - /v3/api-docs.yaml
+      - /v3/api-docs/swagger-config
+      - /swagger-ui/**
+      - /swagger-resources/**
+      - /favicon.ico
+      - /error
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vmerge_services_db
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: 3600
+  
+  web:
+    locale: tr_TR
+    locale-resolver: fixed
+
+server:
+  port: 7070
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, loggers # Açmak istediğiniz endpointler
+  endpoint:
+    health:
+      show-details: always # Sağlık durumunda detayları göster
+
+logging:
+  level:
+    com.example: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  show-actuator: true
+
+# JWT Configuration
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000      # 24 hours in milliseconds
+  refresh-token:
+    expiration: 604800000   # 7 days in milliseconds 

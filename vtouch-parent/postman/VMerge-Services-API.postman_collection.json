@@ -1,0 +1,1025 @@
+{
+	"info": {
+		"_postman_id": "vmerge-services-api-collection",
+		"name": "VMerge Services API",
+		"description": "Spring Boot 3.2.2 REST API with Java 17\n\nBu collection, VMerge Services projesinin tüm API endpoint'lerini içerir.\n\n## Özellikler:\n- JWT Authentication\n- User Management\n- Health Check\n- Multi-language Support\n- Redis Location Caching\n- Swagger Documentation\n\n## Kurulum:\n1. Environment'ı import edin\n2. Base URL'i ayarlayın\n3. Authentication için login endpoint'ini kullanın\n4. Token'ı environment'a kaydedin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "vmerge-services"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.accessToken) {",
+									"        pm.environment.set('accessToken', response.data.accessToken);",
+									"        pm.environment.set('refreshToken', response.data.refreshToken);",
+									"        console.log('Token saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Kullanıcı girişi yapar ve JWT token döner"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"phoneNumber\": \"+905551234567\",\n    \"role\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Yeni kullanıcı kaydı oluşturur"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Refresh token kullanarak yeni access token alır"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						},
+						"description": "Mevcut kullanıcının bilgilerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Kullanıcı çıkışı yapar"
+					},
+					"response": []
+				}
+			],
+			"description": "Kimlik doğrulama ve yetkilendirme endpoint'leri"
+		},
+		{
+			"name": "👥 User Management",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"newuser\",\n    \"email\": \"newuser@example.com\",\n    \"firstName\": \"New\",\n    \"lastName\": \"User\",\n    \"phoneNumber\": \"+905551234568\",\n    \"role\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Yeni kullanıcı oluşturur"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "ID'ye göre kullanıcı getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Username",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/username/admin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"username",
+								"admin"
+							]
+						},
+						"description": "Kullanıcı adına göre kullanıcı getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Updated\",\n    \"lastName\": \"Name\",\n    \"phoneNumber\": \"+905551234569\",\n    \"role\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "Kullanıcı bilgilerini günceller"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "Kullanıcıyı soft delete yapar"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users?page=0&size=10&sort=createdAt&direction=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt"
+								},
+								{
+									"key": "direction",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Tüm kullanıcıları sayfalama ile getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/search?keyword=admin&status=ACTIVE&role=ADMIN&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "admin"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								},
+								{
+									"key": "role",
+									"value": "ADMIN"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Kullanıcıları arama kriterlerine göre arar"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/statistics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"statistics"
+							]
+						},
+						"description": "Kullanıcı istatistiklerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/recent?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"recent"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Son 30 günde oluşturulan kullanıcıları getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Change User Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/1/status?status=INACTIVE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "INACTIVE"
+								}
+							]
+						},
+						"description": "Kullanıcı durumunu değiştirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/by-status/ACTIVE?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"by-status",
+								"ACTIVE"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Belirli durumdaki kullanıcıları getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Role",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/by-role/ADMIN?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"by-role",
+								"ADMIN"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Belirli roldeki kullanıcıları getirir"
+					},
+					"response": []
+				}
+			],
+			"description": "Kullanıcı yönetimi endpoint'leri"
+		},
+		{
+			"name": "🏥 Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Uygulama sağlık durumunu kontrol eder"
+					},
+					"response": []
+				},
+				{
+					"name": "Application Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"info"
+							]
+						},
+						"description": "Uygulama bilgilerini getirir"
+					},
+					"response": []
+				}
+			],
+			"description": "Sistem durumu kontrol endpoint'leri"
+		},
+		{
+			"name": "🌍 Localization Test",
+			"item": [
+				{
+					"name": "Test Turkish Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/test/messages?lang=tr",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"test",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "lang",
+									"value": "tr"
+								}
+							]
+						},
+						"description": "Türkçe mesajları test eder"
+					},
+					"response": []
+				},
+				{
+					"name": "Test English Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/test/messages?lang=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"test",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "lang",
+									"value": "en"
+								}
+							]
+						},
+						"description": "İngilizce mesajları test eder"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Spanish Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/test/messages?lang=es",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"test",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "lang",
+									"value": "es"
+								}
+							]
+						},
+						"description": "İspanyolca mesajları test eder"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Message with Parameters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/test/message-with-params?name=Ahmet&lang=tr",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"test",
+								"message-with-params"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Ahmet"
+								},
+								{
+									"key": "lang",
+									"value": "tr"
+								}
+							]
+						},
+						"description": "Parametreli mesajları test eder"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Locale Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/test/locale-info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"test",
+								"locale-info"
+							]
+						},
+						"description": "Dil ayarı bilgilerini getirir"
+					},
+					"response": []
+				}
+			],
+			"description": "Çok dilli destek test endpoint'leri"
+		},
+		{
+			"name": "📍 Location Cache (Redis)",
+			"item": [
+				{
+					"name": "Cache User Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/location?latitude=41.0082&longitude=28.9784&ttlMinutes=60",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"location"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "41.0082"
+								},
+								{
+									"key": "longitude",
+									"value": "28.9784"
+								},
+								{
+									"key": "ttlMinutes",
+									"value": "60"
+								}
+							]
+						},
+						"description": "Kullanıcı konumunu Redis'e kaydeder"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Location",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/location",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"location"
+							]
+						},
+						"description": "Kullanıcı konumunu Redis'ten getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Add to Favorites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/favorites/istanbul",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"favorites",
+								"istanbul"
+							]
+						},
+						"description": "Kullanıcının favori lokasyonlarına ekler"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Favorites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/favorites",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"favorites"
+							]
+						},
+						"description": "Kullanıcının favori lokasyonlarını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from Favorites",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/favorites/istanbul",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"favorites",
+								"istanbul"
+							]
+						},
+						"description": "Kullanıcının favori lokasyonlarından çıkarır"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Location Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/istanbul/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"istanbul",
+								"stats"
+							]
+						},
+						"description": "Lokasyon istatistiklerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Clear User Cache",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/user/1/cache",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"user",
+								"1",
+								"cache"
+							]
+						},
+						"description": "Kullanıcının lokasyon önbelleğini temizler"
+					},
+					"response": []
+				},
+				{
+					"name": "Redis Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/redis/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								"redis",
+								"status"
+							]
+						},
+						"description": "Redis bağlantı durumunu kontrol eder"
+					},
+					"response": []
+				}
+			],
+			"description": "Redis tabanlı lokasyon önbellekleme endpoint'leri"
+		},
+		{
+			"name": "📚 Documentation",
+			"item": [
+				{
+					"name": "Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/swagger-ui.html",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"swagger-ui.html"
+							]
+						},
+						"description": "Swagger UI dokümantasyonu"
+					},
+					"response": []
+				},
+				{
+					"name": "OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/v3/api-docs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						},
+						"description": "OpenAPI JSON dokümantasyonu"
+					},
+					"response": []
+				}
+			],
+			"description": "API dokümantasyon endpoint'leri"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:7070/api",
+			"type": "string"
+		}
+	]
+} 
