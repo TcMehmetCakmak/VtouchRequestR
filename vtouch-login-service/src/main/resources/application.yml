@@ -1,6 +1,6 @@
 spring:
   application:
-    name: vmerge-services
+    name: vtouch-services
   security:
     enabled: true
     header-validation:

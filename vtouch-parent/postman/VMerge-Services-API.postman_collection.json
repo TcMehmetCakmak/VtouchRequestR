@@ -4,7 +4,7 @@
 		"name": "VMerge Services API",
 		"description": "Spring Boot 3.2.2 REST API with Java 17\n\nBu collection, VMerge Services projesinin tüm API endpoint'lerini içerir.\n\n## Özellikler:\n- JWT Authentication\n- User Management\n- Health Check\n- Multi-language Support\n- Redis Location Caching\n- Swagger Documentation\n\n## Kurulum:\n1. Environment'ı import edin\n2. Base URL'i ayarlayın\n3. Authentication için login endpoint'ini kullanın\n4. Token'ı environment'a kaydedin",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "vmerge-services"
+		"_exporter_id": "vtouch-services"
 	},
 	"item": [
 		{

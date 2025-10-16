@@ -74,7 +74,7 @@ security:
 # Logging configuration
 logging:
   level:
-    com.venhancer.vmerge: DEBUG
+    com.vtouch: DEBUG
     org.springframework.cloud.openfeign: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
