@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.vmerge</groupId>
+    <groupId>com.vtouch</groupId>
     <artifactId>vtouch-parent</artifactId>
     <version>1.0.0</version>
     <name>vtouch-parent</name>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>com.vmerge</groupId>
+        <groupId>com.vtouch</groupId>
         <artifactId>vtouch-parent</artifactId>
         <version>1.0.0</version>
         <relativePath>../vtouch-parent/pom.xml</relativePath>
@@ -18,7 +18,7 @@
         <relativePath/>
     </parent>-->
     
-    <groupId>com.vmerge.login</groupId>
+    <groupId>com.vtouch.login</groupId>
     <artifactId>vtouch-login-service</artifactId>
     <version>1.0.0</version>
     <name>vtouch-login-service</name>

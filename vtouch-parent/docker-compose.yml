@@ -1,9 +1,8 @@
-version: '3.8'
 
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: vmerge-services-postgres-4
+    container_name: vtouch-services-postgres
     environment:
       POSTGRES_DB: vmerge_services_db
       POSTGRES_USER: postgres
@@ -17,7 +16,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: vmerge-services-pgadmin-4
+    container_name: vtouch-services-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -29,7 +28,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: vmerge-services-redis-5
+    container_name: vtouch-services-redis
     ports:
       - "6379:6379"
     volumes:
@@ -39,7 +38,7 @@ services:
 
   redis-commander:
     image: rediscommander/redis-commander:latest
-    container_name: vmerge-services-redis-commander-4
+    container_name: vtouch-services-redis-commander
     environment:
       REDIS_HOSTS: local:redis:6379
     ports:
